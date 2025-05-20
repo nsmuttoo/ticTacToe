@@ -9,7 +9,12 @@ for(i=0;i<9;i++){
 }
 
 function initialize(){
+
     table = document.getElementById("mainTable")
+    table.innerHTML = ""
+    for(i=0;i<9;i++){
+        slot[i] = ""
+    }
     buttons =[]
     cells = []
     j=0;
@@ -38,20 +43,33 @@ function initialize(){
 table.appendChild(row1)
 table.appendChild(row2)
 table.appendChild(row3)
-    
+
+reset = document.createElement("button")
+reset.innerHTML = "RESET"
+reset.addEventListener("click",resetOnClick)
+document.body.appendChild(reset)
+
+    control.updateDisplay()
+}
+function resetOnClick(event){
+control.reset()
 }
 
 function buttonOnClick(event){
 console.log(this.id)
+if(slot[this.id] == ""){
 this.innerHTML = control.getTurn()
 board.play(this.id)
 }
+}
 
 function play(index){
+    if(slot[index] == ""){
     slot[index] = control.getTurn()
     console.log("Played " +control.getTurn() +" at " + index)
     control.checkWin(board.slot)
     control.turnOver()
+}
 }
 
 
@@ -64,7 +82,8 @@ return{slot, play, initialize}
 
     function gameController(){
 
-
+        let xScore =0
+        let oScore =0
         let turn = Math.round(Math.random())
         console.log(turn)
 
@@ -76,14 +95,24 @@ return{slot, play, initialize}
             }
 
         }
+        function updateDisplay(){
+            turnDisplay = document.getElementById("turn")
+            x = document.getElementById("xScore")
+            x.innerHTML = xScore
+            o = document.getElementById("oScore")
+            o.innerHTML = oScore
+            turnDisplay.innerHTML = getTurn()
+        }
 
         function turnOver(){
+
 
             if(control.getTurn() == "x"){
                 turn = 1
             }else{
                 turn = 0
             }
+            updateDisplay()
         }
 
         
@@ -118,13 +147,41 @@ return{slot, play, initialize}
             if(slot[2] == slot[4] && slot[2] == slot[6]){
                 if(slot[6] != ""){gameWin(slot[6])}
             }
+            checkTie()
+
         
+        }
+        function checkTie(){
+            mark = 0
+            for(i =0; i<9;i++){
+                if(board.slot[i] == ""){
+                    console.log(board.slot[i])
+                    mark =1
+                }
+            }
+            if(mark == 0){
+                console.log("Game Tie")
+                lastGame = document.getElementById("lastGame")
+                lastGame.innerHTML = ("Last Game Results: TIE ")
+                board.initialize()
+            }
         }
 
         function gameWin(winner){
-            console.log("Winner is: " + winner)
+            if(winner == "x"){
+                xScore++
+            }else{
+                oScore++
+            }
+            lastGame = document.getElementById("lastGame")
+                lastGame.innerHTML = ("Last Game Results: WINNER  -" + winner)
+            board.initialize()
         }
-        return{getTurn,turnOver, checkWin}
+        function reset(){
+            xScore =0
+            oScore =0
+        }
+        return{getTurn,turnOver, checkWin,updateDisplay,reset}
 }
 
 
