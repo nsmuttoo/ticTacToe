@@ -9,6 +9,8 @@ for(i=0;i<9;i++){
 }
 
 function initialize(){
+    but = document.getElementById("resetButton")
+            but.innerHTML = ""
 
     table = document.getElementById("mainTable")
     table.innerHTML = ""
@@ -47,11 +49,14 @@ table.appendChild(row3)
 reset = document.createElement("button")
 reset.innerHTML = "RESET"
 reset.addEventListener("click",resetOnClick)
-document.body.appendChild(reset)
+upper = document.getElementById("resetButton")
+upper.appendChild(reset)
+reset.id = "reset"
 
     control.updateDisplay()
 }
 function resetOnClick(event){
+    console.log("resert")
 control.reset()
 }
 
@@ -97,10 +102,12 @@ return{slot, play, initialize}
         }
         function updateDisplay(){
             turnDisplay = document.getElementById("turn")
+            xname = document.getElementById("xInput")
+            oname = document.getElementById("oInput")
             x = document.getElementById("xScore")
-            x.innerHTML = xScore
+            x.innerHTML = (xname.value + "(X): " +xScore)
             o = document.getElementById("oScore")
-            o.innerHTML = oScore
+            o.innerHTML = oname.value + "(O): " +oScore
             turnDisplay.innerHTML = getTurn()
         }
 
@@ -180,6 +187,12 @@ return{slot, play, initialize}
         function reset(){
             xScore =0
             oScore =0
+          
+            
+            
+            updateDisplay()
+            board.initialize()
+
         }
         return{getTurn,turnOver, checkWin,updateDisplay,reset}
 }
